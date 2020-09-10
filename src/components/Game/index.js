@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './styles.css'
 
-import { Button, PlayButton } from './style.js'
+import { Container, Button, PlayButton } from './style.js'
+
+import Card from '../Card'
 
 function Game() {
 
     let itens = ['Uva', 'Mamão', 'Pera', 'Maça', 'Banana', 'Melão', 'Melancia', 'Abacate']
-    // let itens = ['Uva', 'Mamão', 'Pera', 'Maça']
 
     function CreateInitialState() {
         let itensDuplicated = itens.concat(itens.map(item => `${item}-2`))
@@ -42,18 +42,22 @@ function Game() {
     function CheckResult() {
         const sc = selectedCards
         const result = `${sc[0]}-2` === sc[1] || sc[0] === `${sc[1]}-2`
-
-        console.log('result', result)
-
         setTimeout(() => {
-            setSelectedCards([])
-            setCountPlay(0)
-            setIsSelected(false)
-            modifyCard()
-            setIsSelected(true)
+            ResetTentative()
             if (result) setCards(cards.filter(cards => cards !== sc[0] && cards !== sc[1]))
-        }, 3000)
+        }, 2000)
+    }
 
+    function ResetTentative() {
+        setSelectedCards([])
+        setCountPlay(0)
+        setIsSelected(false)
+        modifyCard()
+        setIsSelected(true)
+    }
+
+    function CardName(card) {
+        return (card === selectedCards[0] || card === selectedCards[1]) ? card.includes('-2') ? card.split('-2')[0] : card : 'Card'
     }
 
     useEffect(() => {
@@ -62,30 +66,24 @@ function Game() {
             setPlaying(false)
             setCards(CreateInitialState())
         }
-
-        console.log(selectedCards)
-
     }, [countPlay, cards])
 
     return (
-        <>
-            <h1>Memory Game</h1>
-
-            <br />
-
+        <Container>
+            <h1>Jogo da Memória</h1>
             {(!!playing) ? cards.map(card => (
-                <Button
-                    id={card}
-                    key={card}
-                    onClick={() => Play(card)}>
-                    {
-                        (card === selectedCards[0] || card === selectedCards[1]) ? card.includes('-2') ? card.split('-2')[0] : card : 'Card'
-                    }
-                </Button>
-            )) : <PlayButton id='Play' onClick={() => setPlaying(true)} >Jogar</PlayButton>}
 
-            <br />
-        </>
+                <>
+                    <Button
+                        id={card}
+                        key={card}
+                        onClick={() => Play(card)}>
+                        {CardName(card)}
+                    </Button>
+                </>
+
+            )) : <PlayButton id='Play' onClick={() => setPlaying(true)} >Jogar</PlayButton>}
+        </Container>
     )
 }
 

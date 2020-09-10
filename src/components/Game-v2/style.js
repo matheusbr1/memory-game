@@ -10,6 +10,17 @@ export const Container = styled.div`
         align-items: center;
     }
 `
+
+export const Button = styled.button`
+    width: calc((100% - 2px * 8 ) / 4);
+    border: none;
+    max-width: 600px;
+    height: 100px;
+    margin: 2px;
+    border-radius: 8px; 
+    outline: none;
+`
+
 export const PlayButton = styled.button`
     display: block;
     margin: 0 auto;
