@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Container } from './style.js'
+import React, { useContext, useEffect, useState } from 'react'
+import { Container, PlayButton } from './style.js'
 import { GameContext } from '../../contexts/GameContext'
 import Card from '../Card'
 import CardDefault from '../../assets/1.png'
@@ -9,58 +9,96 @@ function Game() {
     const {
         cards,
         setCards,
-        CreateInitialState,
         selectedCards,
         setSelectedCards,
         countPlay,
-        setCountPlay
+        setCountPlay,
+        setMoviments,
+        moviments,
+        CreateInitialState
     } = useContext(GameContext)
 
-    function CheckResult() {
-        const sc = selectedCards
-        const result = `${sc[0]}-2` === sc[1] || sc[0] === `${sc[1]}-2`
-        setTimeout(() => {
-            if (result) {
-                console.log('Match')
-            }
-            ResetTentative()
-        }, 2000)
+    const [playing, setPlaying] = useState(false)
+    const [time, setTime] = useState(() => new Date().getMinutes())
+
+    function handleResult() {
+        if (countPlay === 2) {
+            const result = `${selectedCards[0]}-2` === selectedCards[1]
+                || selectedCards[0] === `${selectedCards[1]}-2`
+            setTimeout(() => {
+                if (result) {
+                    console.log('Match')
+                    selectedCards.map(item => {
+                        cards.map(card => {
+                            (card.name === item) && (card.done = true)
+                        })
+                    })
+                }
+                resetTentative()
+            }, 500)
+        }
     }
 
-    function ResetTentative() {
+    function resetTentative() {
         setSelectedCards([])
         setCountPlay(0)
     }
 
-    useEffect(() => {
-        if (countPlay === 2) CheckResult()
-        if (cards.length === 0) setCards(CreateInitialState())
-    }, [countPlay, cards])
+    function resetGame() {
+        setTime(() => new Date().getMinutes())
+        setMoviments(0)
+        setCards(CreateInitialState())
+    }
+
+    useEffect(() => handleResult(), [countPlay, cards])
+
+    const CardsLeftToFinish = cards.filter(item => item.done !== true)
 
     useEffect(() => {
-        console.log(cards)
-        console.log(selectedCards)
-        console.log(countPlay)
-    }, [cards, countPlay, selectedCards])
+        if (CardsLeftToFinish.length === 0) {
+            setPlaying(false)
+            const currentTime = new Date().getMinutes()
+            setTime(currentTime - time)
+            console.log('Terminou')
+        }
+    }, [selectedCards])
 
     return (
-        <Container>
-            <h1>Jogo da Memória</h1>
-            {cards.map(card => {
-                return (card.done) ? (
-                    <Card
-                        card={card.name}
-                        key={card.name}
-                        src={card.image}
-                    />
-                ) : (
-                        <Card
-                            card={card.name}
-                            key={card.name}
-                            src={CardDefault}
-                        />
-                    )
-            })}
+        <Container playing={playing} >
+            {(playing) ? (
+                <div id='CardsContainer' >
+                    <h2>Movimentos: {moviments}</h2>
+                    {cards.map(card => {
+                        return (card.done) ? (
+                            <Card
+                                card={card.name}
+                                key={card.name}
+                                src={card.image}
+                            />
+                        ) : (
+                                <Card
+                                    card={card.name}
+                                    key={card.name}
+                                    src={CardDefault}
+                                />
+                            )
+                    })}
+                </div>
+            ) : (
+                    <>
+                        <h1>Jogo da Memória</h1>
+                        {(moviments !== 0) && (
+                            <>
+                                <h3>Movimentos Executados : {moviments}</h3>
+                                <h3>Tempo : {time} minuto(s)</h3>
+                            </>
+                        )}
+                        <PlayButton onClick={() => {
+                            resetGame()
+                            setPlaying(true)
+                        }} >Jogar</PlayButton>
+                    </>
+                )}
         </Container>
     )
 }
