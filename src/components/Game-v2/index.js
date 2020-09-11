@@ -19,7 +19,7 @@ function Game() {
     } = useContext(GameContext)
 
     const [playing, setPlaying] = useState(false)
-    const [time, setTime] = useState(() => new Date().getMinutes())
+    const [time, setTime] = useState(() => new Date().getSeconds())
 
     function handleResult() {
         if (countPlay === 2) {
@@ -45,7 +45,7 @@ function Game() {
     }
 
     function resetGame() {
-        setTime(() => new Date().getMinutes())
+        setTime(() => new Date().getSeconds())
         setMoviments(0)
         setCards(CreateInitialState())
     }
@@ -57,8 +57,8 @@ function Game() {
     useEffect(() => {
         if (CardsLeftToFinish.length === 0) {
             setPlaying(false)
-            const currentTime = new Date().getMinutes()
-            setTime(currentTime - time)
+            const currentTime = new Date().getSeconds()
+            setTime(Math.abs(currentTime - time))
             console.log('Terminou')
         }
     }, [selectedCards])
@@ -90,7 +90,7 @@ function Game() {
                         {(moviments !== 0) && (
                             <>
                                 <h3>Movimentos Executados : {moviments}</h3>
-                                <h3>Tempo : {time} minuto(s)</h3>
+                                <h3>Tempo : {time} segundos </h3>
                             </>
                         )}
                         <PlayButton onClick={() => {
