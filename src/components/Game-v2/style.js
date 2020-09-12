@@ -1,8 +1,19 @@
 import styled, { css } from 'styled-components'
+import background from '../../assets/fundo.jpeg'
+
+export const Background = styled.div`
+    background-color: rgba(255, 255, 255, 0.7);
+    background-image: url(${background});
+    background-blend-mode: color;
+    width:100%;
+    height:100%;
+`
 
 export const Container = styled.div`
     padding: 0;
     margin: auto;
+
+    background-image: 'url('${background}')';
     
     max-width: 768px;
     height: 100vh;
@@ -13,6 +24,12 @@ export const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    @media (max-width: 600px) {
+        div#CardsContainer {
+            max-width:calc(125px * 3);
+        }
+    }
 
     h1, h2, h3, h4 {
         margin: 15px 5px;
