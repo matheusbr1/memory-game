@@ -1,5 +1,7 @@
 ## Memory Game
 
+Memory game built with React.
+
 ![memory-game](https://user-images.githubusercontent.com/28275815/92983967-1fcf7380-f47d-11ea-89b7-26b84f6838e1.png)
 
 ### For execute in your machine ☕
